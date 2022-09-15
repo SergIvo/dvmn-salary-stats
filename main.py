@@ -11,10 +11,10 @@ def get_vacancies(user_agent, params):
     return response.json()
 
 
-def get_language_stats(languages):
+def get_language_stats(user_agent, languages):
     language_statistics = {}
     for language in languages:
-        params = {'text': language, 'area': 1, 'period': 15}
+        params = {'text': language, 'area': 1, 'period': 30}
         vacancies = get_vacancies(user_agent, params)
         language_statistics.update({language: vacancies['found']})
     return language_statistics
@@ -35,8 +35,7 @@ def predict_rub_salary(vacancy):
         return float(salary.get('to')) * 0.8
 
 
-if __name__ == '__main__':
-    load_dotenv()
+def make_hh_stats():
     user_agent = os.getenv('USER_AGENT')
 
     params = {'text': 'Python', 'area': 1, 'period': 30}
@@ -90,3 +89,14 @@ if __name__ == '__main__':
         languages_statistics.update({language: language_stats})
 
     print(languages_statistics)
+
+
+if __name__ == '__main__':
+    load_dotenv()
+    headers = {'X-Api-App-Id': os.getenv('SUPERJOB_KEY')}
+    url = 'https://api.superjob.ru/2.0/vacancies/'
+    params = {'keyword': 'Python'}
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    for vacancy in response.json()['objects']:
+        print(vacancy['profession'])
