@@ -95,8 +95,9 @@ if __name__ == '__main__':
     load_dotenv()
     headers = {'X-Api-App-Id': os.getenv('SUPERJOB_KEY')}
     url = 'https://api.superjob.ru/2.0/vacancies/'
-    params = {'keyword': 'Python'}
+    params = {'keyword': 'Python', 'town': 4, 'catalogues': 48}
     response = requests.get(url, headers=headers, params=params)
     response.raise_for_status()
-    for vacancy in response.json()['objects']:
-        print(vacancy['profession'])
+    vacancies = response.json()['objects']
+    for vacancy in vacancies:
+        print(vacancy['profession'], vacancy['town']['title'], sep=', ')
