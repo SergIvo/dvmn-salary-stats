@@ -1,5 +1,6 @@
 import os
 import requests
+from terminaltables import DoubleTable
 from dotenv import load_dotenv
 
 
@@ -100,6 +101,17 @@ def get_language_stats_sj(sj_api_key, languages):
     return languages_statistics
 
 
+def make_table(title, languages_stats):
+    header = ['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']
+    rows = [header]
+    for language, stats in languages_stats.items():
+        row = [language]
+        row.extend(stats.values())
+        rows.append(row)
+    table = DoubleTable(rows, title)
+    print(table.table)
+
+
 if __name__ == '__main__':
     load_dotenv()
     user_agent = os.getenv('USER_AGENT')
@@ -122,4 +134,15 @@ if __name__ == '__main__':
         'TypeScript'
     ]
 
-    print(get_language_stats_sj(sj_api_key, languages))
+    TABLE_DATA = [
+        ['Platform', 'Years', 'Notes'],
+        ['Mk5', '2007-2009', 'The Golf Mk5 Variant was\nintroduced in 2007.'],
+        ('MKVI', '2009-2013', 'Might actually be Mk5.'),
+    ]
+
+    title = 'Jetta SportWagen'
+    table = DoubleTable(TABLE_DATA, title)
+
+    sj_statistics = get_language_stats_sj(sj_api_key, languages)
+
+    make_table('HeadHunter Moscow', sj_statistics)
