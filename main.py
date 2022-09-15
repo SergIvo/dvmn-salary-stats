@@ -11,6 +11,14 @@ def get_vacancies_hh(user_agent, params):
     return response.json()
 
 
+def get_vacancies_sj(api_key, params):
+    url = 'https://api.superjob.ru/2.0/vacancies/'
+    headers = {'X-Api-App-Id': api_key}
+    response = requests.get(url, headers=headers, params=params)
+    response.raise_for_status()
+    return response.json()
+
+
 def predict_salary(salary_from, salary_to):
     if salary_from and salary_to:
         return (float(salary_from) + float(salary_to)) / 2
@@ -61,9 +69,42 @@ def get_language_stats_hh(user_agent, languages):
     return languages_statistics
 
 
+def get_language_stats_sj(sj_api_key, languages):
+    languages_statistics = dict()
+    for language in languages:
+        all_vacancies = []
+        params = {'keyword': language, 'town': 4, 'catalogues': 48, 'page': 0}
+        vacancies = get_vacancies_sj(sj_api_key, params)
+        all_vacancies.extend(vacancies['objects'])
+        number_of_vacancies = vacancies['total']
+        page = 1
+
+        while len(all_vacancies) < number_of_vacancies and len(all_vacancies) < 500:
+            params = {'keyword': language, 'town': 4, 'catalogues': 48, 'page': page}
+            vacancies = get_vacancies_sj(sj_api_key, params)
+            all_vacancies.extend(vacancies['objects'])
+            page += 1
+
+        salaries = [predict_rub_salary_sj(vacancy) for vacancy in all_vacancies if predict_rub_salary_sj(vacancy)]
+        if not salaries:
+            average_salary = None
+        else:
+            average_salary = int(sum(salaries) / len(salaries))
+        language_stats = {
+            "vacancies_found": number_of_vacancies,
+            "vacancies_processed": len(salaries),
+            "average_salary": average_salary
+        }
+        languages_statistics.update({language: language_stats})
+
+    return languages_statistics
+
+
 if __name__ == '__main__':
     load_dotenv()
     user_agent = os.getenv('USER_AGENT')
+    sj_api_key = os.getenv('SJ_API_KEY')
+
     languages = [
         'JavaScript',
         'Java',
@@ -81,11 +122,4 @@ if __name__ == '__main__':
         'TypeScript'
     ]
 
-    headers = {'X-Api-App-Id': os.getenv('SJ_API_KEY')}
-    url = 'https://api.superjob.ru/2.0/vacancies/'
-    params = {'keyword': 'Python', 'town': 4, 'catalogues': 48}
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
-    vacancies = response.json()['objects']
-    for vacancy in vacancies:
-        print(vacancy['profession'], vacancy['town']['title'], predict_rub_salary_sj(vacancy), sep=', ')
+    print(get_language_stats_sj(sj_api_key, languages))
