@@ -21,7 +21,10 @@ def get_language_stats(languages):
 
 
 def predict_rub_salary(vacancy):
-    salary = vacancy['salary']
+    try:
+        salary = vacancy['salary']
+    except Exception as ex:
+        print(vacancy, ex, sep='\n')
     if not salary or salary['currency'] != 'RUR':
         return None
     if salary.get('from') and salary.get('to'):
@@ -57,4 +60,23 @@ if __name__ == '__main__':
         'Objective-C',
         'Scala',
         'Swift',
-        'TypeScript']
+        'TypeScript'
+    ]
+
+    languages_statistics = dict()
+    for language in languages:
+        lang_params = {'text': language, 'area': 1, 'period': 30}
+        lang_vacancies = get_vacancies(user_agent, lang_params)
+        salaries = [predict_rub_salary(vacancy) for vacancy in lang_vacancies['items'] if predict_rub_salary(vacancy)]
+        if not salaries:
+            average_salary = None
+        else:
+            average_salary = int(sum(salaries) / len(salaries))
+        language_stats = {
+            "vacancies_found": lang_vacancies['found'],
+            "vacancies_processed": len(salaries),
+            "average_salary": average_salary
+        }
+        languages_statistics.update({language: language_stats})
+
+    print(languages_statistics)
