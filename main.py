@@ -134,15 +134,8 @@ if __name__ == '__main__':
         'TypeScript'
     ]
 
-    TABLE_DATA = [
-        ['Platform', 'Years', 'Notes'],
-        ['Mk5', '2007-2009', 'The Golf Mk5 Variant was\nintroduced in 2007.'],
-        ('MKVI', '2009-2013', 'Might actually be Mk5.'),
-    ]
-
-    title = 'Jetta SportWagen'
-    table = DoubleTable(TABLE_DATA, title)
-
+    hh_statistics = get_language_stats_hh(user_agent, languages)
     sj_statistics = get_language_stats_sj(sj_api_key, languages)
 
-    make_table('HeadHunter Moscow', sj_statistics)
+    make_table('HeadHunter Moscow', hh_statistics)
+    make_table('SuperJob Moscow', sj_statistics)
