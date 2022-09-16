@@ -130,7 +130,7 @@ def make_table(title, languages_stats):
         row.extend(stats.values())
         rows.append(row)
     table = DoubleTable(rows, title)
-    print(table.table)
+    return table.table
 
 
 if __name__ == '__main__':
@@ -158,5 +158,7 @@ if __name__ == '__main__':
     hh_statistics = get_language_stats_hh(user_agent, languages)
     sj_statistics = get_language_stats_sj(sj_api_key, languages)
 
-    make_table('HeadHunter Moscow', hh_statistics)
-    make_table('SuperJob Moscow', sj_statistics)
+    hh_stats_table = make_table('HeadHunter Moscow', hh_statistics)
+    sj_stats_table = make_table('SuperJob Moscow', sj_statistics)
+
+    print(hh_stats_table, sj_stats_table, sep='\n')
