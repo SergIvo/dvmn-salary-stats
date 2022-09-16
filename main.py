@@ -44,14 +44,21 @@ def predict_rub_salary_sj(vacancy):
 
 def get_language_stats_hh(user_agent, languages):
     languages_statistics = dict()
+    moscow_area_id = 1
     for language in languages:
-        params = {'text': language, 'area': 1, 'period': 30, 'per_page': 100}
+        params = {'text': language, 'area': moscow_area_id, 'period': 30, 'per_page': 100}
         vacancies = get_vacancies_hh(user_agent, params)
         all_vacancies = vacancies['items']
         page = vacancies['page'] + 1
 
         while page < vacancies['pages']:
-            params = {'text': language, 'area': 1, 'period': 30, 'per_page': 100, 'page': page}
+            params = {
+                'text': language,
+                'area': moscow_area_id,
+                'period': 30,
+                'per_page': 100,
+                'page': page
+            }
             vacancies = get_vacancies_hh(user_agent, params)
             all_vacancies.extend(vacancies['items'])
             page += 1
@@ -74,14 +81,26 @@ def get_language_stats_sj(sj_api_key, languages):
     languages_statistics = dict()
     for language in languages:
         all_vacancies = []
-        params = {'keyword': language, 'town': 4, 'catalogues': 48, 'page': 0}
+        moscow_town_id = 4
+        programmers_catalogue_id = 48
+        params = {
+            'keyword': language,
+            'town': moscow_town_id,
+            'catalogues': programmers_catalogue_id,
+            'page': 0
+        }
         vacancies = get_vacancies_sj(sj_api_key, params)
         all_vacancies.extend(vacancies['objects'])
         number_of_vacancies = vacancies['total']
         page = 1
 
         while len(all_vacancies) < number_of_vacancies and len(all_vacancies) < 500:
-            params = {'keyword': language, 'town': 4, 'catalogues': 48, 'page': page}
+            params = {
+                'keyword': language,
+                'town': moscow_town_id,
+                'catalogues': programmers_catalogue_id,
+                'page': page
+            }
             vacancies = get_vacancies_sj(sj_api_key, params)
             all_vacancies.extend(vacancies['objects'])
             page += 1
