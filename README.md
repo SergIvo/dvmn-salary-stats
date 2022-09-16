@@ -1,4 +1,4 @@
-# Space Pictures To Telegram
+# Salary statistic From HeadHunter and SuperJob
 
 ## About
 
