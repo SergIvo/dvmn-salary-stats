@@ -74,7 +74,7 @@ def get_language_stats_hh(user_agent, languages):
             "vacancies_processed": len(salaries),
             "average_salary": average_salary
         }
-        languages_statistics.update({language: language_stats})
+        languages_statistics[language] = language_stats
     return languages_statistics
 
 
@@ -117,7 +117,7 @@ def get_language_stats_sj(sj_api_key, languages):
             "vacancies_processed": len(salaries),
             "average_salary": average_salary
         }
-        languages_statistics.update({language: language_stats})
+        languages_statistics[language] = language_stats
 
     return languages_statistics
 
