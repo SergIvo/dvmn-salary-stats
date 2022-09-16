@@ -63,7 +63,8 @@ def get_language_stats_hh(user_agent, languages):
             all_vacancies.extend(vacancies['items'])
             page += 1
 
-        salaries = [predict_rub_salary_hh(vacancy) for vacancy in all_vacancies if predict_rub_salary_hh(vacancy)]
+        salaries_unfiltered = [predict_rub_salary_hh(vacancy) for vacancy in all_vacancies]
+        salaries = list(filter(None, salaries_unfiltered))
         if not salaries:
             average_salary = None
         else:
@@ -105,7 +106,8 @@ def get_language_stats_sj(sj_api_key, languages):
             all_vacancies.extend(vacancies['objects'])
             page += 1
 
-        salaries = [predict_rub_salary_sj(vacancy) for vacancy in all_vacancies if predict_rub_salary_sj(vacancy)]
+        salaries_unfiltered = [predict_rub_salary_sj(vacancy) for vacancy in all_vacancies]
+        salaries = list(filter(None, salaries_unfiltered))
         if not salaries:
             average_salary = None
         else:
