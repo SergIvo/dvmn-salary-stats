@@ -45,8 +45,9 @@ def predict_rub_salary_sj(vacancy):
 def get_language_stats_hh(user_agent, languages):
     languages_statistics = dict()
     moscow_area_id = 1
+    period_in_days = 30
     for language in languages:
-        params = {'text': language, 'area': moscow_area_id, 'period': 30, 'per_page': 100}
+        params = {'text': language, 'area': moscow_area_id, 'period': period_in_days, 'per_page': 100}
         vacancies = get_vacancies_hh(user_agent, params)
         all_vacancies = vacancies['items']
         page = vacancies['page'] + 1
@@ -55,7 +56,7 @@ def get_language_stats_hh(user_agent, languages):
             params = {
                 'text': language,
                 'area': moscow_area_id,
-                'period': 30,
+                'period': period_in_days,
                 'per_page': 100,
                 'page': page
             }
@@ -63,8 +64,8 @@ def get_language_stats_hh(user_agent, languages):
             all_vacancies.extend(vacancies['items'])
             page += 1
 
-        salaries_unfiltered = [predict_rub_salary_hh(vacancy) for vacancy in all_vacancies]
-        salaries = list(filter(None, salaries_unfiltered))
+        unfiltered_salaries = [predict_rub_salary_hh(vacancy) for vacancy in all_vacancies]
+        salaries = list(filter(None, unfiltered_salaries))
         if not salaries:
             average_salary = None
         else:
@@ -106,8 +107,8 @@ def get_language_stats_sj(sj_api_key, languages):
             all_vacancies.extend(vacancies['objects'])
             page += 1
 
-        salaries_unfiltered = [predict_rub_salary_sj(vacancy) for vacancy in all_vacancies]
-        salaries = list(filter(None, salaries_unfiltered))
+        unfiltered_salaries = [predict_rub_salary_sj(vacancy) for vacancy in all_vacancies]
+        salaries = list(filter(None, unfiltered_salaries))
         if not salaries:
             average_salary = None
         else:
