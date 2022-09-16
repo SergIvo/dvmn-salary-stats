@@ -1,4 +1,4 @@
-# Salary statistic From HeadHunter and SuperJob
+# Salary Statistics From HeadHunter and SuperJob
 
 ## About
 
